@@ -367,7 +367,7 @@ def menu_item_talon_key(menu_item):
 
     got_key = False
 
-    if key_char is not None:
+    if key_char not in {None, " "}:
         keys.append(key_char.lower())
         got_key = True
 
