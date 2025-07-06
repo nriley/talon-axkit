@@ -4,7 +4,17 @@ from itertools import chain
 from typing import Optional
 from uuid import UUID
 
-from talon import Context, Module, actions, app, imgui, settings, speech_system, ui
+from talon import (
+    Context,
+    Module,
+    actions,
+    app,
+    clip,
+    imgui,
+    settings,
+    speech_system,
+    ui,
+)
 
 mod = Module()
 
@@ -52,6 +62,9 @@ class Actions:
 
     def notification_show_actions(index: int):
         """Display actions available on the notification at the specified index, or hide list if index is -1"""
+
+    def notification_copy(index: int):
+        """Copies the text of the notification at the specified index"""
 
     def notification_center():
         """Display or hide Notification Center"""
@@ -119,6 +132,17 @@ class Notification:
             actions=group_actions,
         )
 
+    def __str__(self):
+        return "\n".join(
+            l
+            for l in (
+                f"{self.app_name}: {self.title or ''}",
+                f"{self.subtitle or ''}",
+                f"{self.body or ''}",
+            )
+            if l
+        )
+
 
 MONITOR = None
 
@@ -148,6 +172,9 @@ class UserActions:
 
     def notification_show_actions(index: int):
         MONITOR.show_actions(index)
+
+    def notification_copy(index: int):
+        MONITOR.copy(index)
 
     def notification_center():
         cc = ui.apps(bundle="com.apple.controlcenter")[0]
@@ -321,6 +348,17 @@ class NotificationMonitor:
             gui_actions.hide()
 
             del self.actions_for_notification
+
+    def copy(self, index):
+        if index == -1:
+            return
+
+        if (notification := self[index]) is None:
+            return
+
+        notification_text = str(notification)
+        clip.set_text(notification_text)
+        app.notify(f"Copied notification to clipboard", notification_text)
 
     @property
     def actions(self):
