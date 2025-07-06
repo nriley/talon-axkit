@@ -111,7 +111,7 @@ class Notification:
         return Notification(
             identifier=identifier,
             subrole=group.AXSubrole,
-            app_name=group.AXDescription,
+            app_name=group.AXDescription.split(", ", 1)[0],
             stacking_identifier=group.AXStackingIdentifier,
             title=title,
             subtitle=subtitle,
