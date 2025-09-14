@@ -1,5 +1,6 @@
 from contextlib import suppress
 from reprlib import Repr
+from typing import Optional
 
 from talon import Context, Module, actions, ctrl, ui
 
@@ -17,20 +18,28 @@ REPR.indent = 4
 @mod.action_class
 class Actions:
     def element_print_hierarchy_at_mouse_pos(
-        all_attributes: bool, complex_attributes: bool
+        all_attributes: bool, complex_attributes: bool, max_depth: Optional[int] = None
     ):
         """Print information about the element at the mouse cursor position and its parents"""
 
     def element_print_hierarchy(
-        element: ui.Element, all_attributes: bool, complex_attributes: bool
+        element: ui.Element,
+        all_attributes: bool,
+        complex_attributes: bool,
+        max_depth: Optional[int] = None,
     ):
         """Print information about the element and its parents"""
 
-    def element_print_tree_at_mouse_pos(all_attributes: bool, complex_attributes: bool):
+    def element_print_tree_at_mouse_pos(
+        all_attributes: bool, complex_attributes: bool, max_depth: Optional[int] = None
+    ):
         """Print information about the element at the mouse cursor position, its parents and parents' siblings"""
 
     def element_print_tree(
-        element: ui.Element, all_attributes: bool, complex_attributes: bool
+        element: ui.Element,
+        all_attributes: bool,
+        complex_attributes: bool,
+        max_depth: Optional[int] = None,
     ):
         """Print information about the element, its parents and parents' siblings"""
 
@@ -49,18 +58,23 @@ class Actions:
 
 @ctx.action_class("user")
 class UserActions:
-    def element_print_hierarchy_at_mouse_pos(all_attributes, complex_attributes):
+    def element_print_hierarchy_at_mouse_pos(
+        all_attributes, complex_attributes, max_depth=None
+    ):
         pos = ctrl.mouse_pos()
         element = ui.element_at(*pos)
+        display = "hierarchy" if max_depth is None or max_depth > 1 else None
 
-        print(element_context(element, pos, "hierarchy"))
+        print(element_context(element, pos, display))
         actions.user.element_print_hierarchy(
-            element, all_attributes, complex_attributes
+            element, all_attributes, complex_attributes, max_depth
         )
 
-    def element_print_hierarchy(element, all_attributes, complex_attributes):
+    def element_print_hierarchy(
+        element, all_attributes, complex_attributes, max_depth=None
+    ):
         hierarchy = []
-        while element is not None:
+        while element is not None and (max_depth is None or len(hierarchy) < max_depth):
             hierarchy.append(element_dict(element, all_attributes, complex_attributes))
             try:
                 element = element.parent
@@ -69,16 +83,20 @@ class UserActions:
 
         print("\n".join(map(format_attributes, hierarchy)))
 
-    def element_print_tree_at_mouse_pos(all_attributes, complex_attributes):
+    def element_print_tree_at_mouse_pos(
+        all_attributes, complex_attributes, max_depth=None
+    ):
         pos = ctrl.mouse_pos()
         element = ui.element_at(*pos)
+        display = "tree" if max_depth is None or max_depth > 1 else None
+        print(element_context(element, pos, display))
+        actions.user.element_print_tree(
+            element, all_attributes, complex_attributes, max_depth
+        )
 
-        print(element_context(element, pos, "tree"))
-        actions.user.element_print_tree(element, all_attributes, complex_attributes)
-
-    def element_print_tree(element, all_attributes, complex_attributes):
+    def element_print_tree(element, all_attributes, complex_attributes, max_depth=None):
         tree = []
-        while element is not None:
+        while element is not None and (max_depth is None or len(tree) < max_depth):
             try:
                 parent = element.parent
             except ui.UIErr:
