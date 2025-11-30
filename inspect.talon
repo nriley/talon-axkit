@@ -19,6 +19,16 @@ element tree all: user.element_print_tree_at_mouse_pos(true, true)
 element tree all <number_small>: user.element_print_tree_at_mouse_pos(true, true, number_small)
 
 
+focused inspect:
+    focused_element = user.focused_element_safe()
+    if focused_element: user.element_print_hierarchy(focused_element, false, false, 1)
+focused inspect more:
+    focused_element = user.focused_element_safe()
+    if focused_element: user.element_print_hierarchy(focused_element, true, false, 1)
+focused inspect all:
+    focused_element = user.focused_element_safe()
+    if focused_element: user.element_print_hierarchy(focused_element, true, true, 1)
+
 focused hierarchy:
     focused_element = user.focused_element_safe()
     if focused_element: user.element_print_hierarchy(focused_element, false, false)
