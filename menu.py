@@ -367,14 +367,14 @@ def menu_item_talon_key(menu_item):
 
     got_key = False
 
-    if key_char not in {None, " "}:
-        keys.append(key_char.lower())
-        got_key = True
-
-    if not got_key and virtual_key is not None:
+    if virtual_key is not None:
         if key_name := VK_NAMES.get(virtual_key):
             keys.append(key_name)
             got_key = True
+
+    if not got_key and key_char not in {None, " "}:
+        keys.append(key_char.lower())
+        got_key = True
 
     # XXX(nriley) consider accounting for glyphs in some cases
     # Example: "Num Lock" in Terminal has kVK_Escape but kMenuClearGlyph
