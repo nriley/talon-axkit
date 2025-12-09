@@ -92,10 +92,10 @@ class Notification:
         if str.isdigit(identifier):
             return int(identifier)
         # For macOS post-Sequoia.
-        try:
+        with suppress(ValueError):
             return UUID(identifier)
-        except ValueError:
-            return None
+        # Some identifiers bridged from iOS start with "location-notification-"
+        return identifier
 
     @staticmethod
     def from_group(group, identifier):
