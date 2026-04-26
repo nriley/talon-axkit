@@ -1,4 +1,4 @@
-from talon import Context, Module, ui
+from talon import Context, Module, actions
 
 ctx = Context()
 mod = Module()
@@ -36,9 +36,11 @@ class UserActions:
     def dictation_current_element():
         # Work around focused element being initially set incorrectly
         # in Mac Office apps.
-        el = ui.focused_element()
+        if (el := actions.next()) is None:
+            return None
+
         role = el.AXRole
-        if role == "AXTextArea":
+        if role in ("AXTextArea", "AXTextField"):
             return el
         elif (role == "AXScrollArea") or (  # Outlook, PowerPoint
             role == "AXSplitGroup" and el.get("AXIdentifier") == "Document Pane"  # Word
