@@ -2,7 +2,9 @@ import os
 from urllib.parse import unquote, urlparse
 
 from talon import Context, Module, actions, app, settings, ui
-from talon.mac import applescript
+
+if app.platform == "mac":
+    from talon.mac import applescript
 
 mod = Module()
 ctx = Context()
@@ -65,7 +67,7 @@ class user_actions:
         escaped_path = path.replace(r'"', r"\"")
         applescript.run(
             rf"""
-            tell application id "{settings.get('user.preferred_terminal')}"
+            tell application id "{settings.get("user.preferred_terminal")}"
                 activate
                 open "{escaped_path}"
             end tell
