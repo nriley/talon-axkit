@@ -358,7 +358,7 @@ class NotificationMonitor:
 
         notification_text = str(notification)
         clip.set_text(notification_text)
-        app.notify(f"Copied notification to clipboard", notification_text)
+        app.notify("Copied notification to clipboard", notification_text)
 
     @property
     def actions(self):
