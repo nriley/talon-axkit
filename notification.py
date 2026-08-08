@@ -217,7 +217,7 @@ class NotificationMonitor:
         self.hide_actions()
 
     def win_open(self, window):
-        if not window.app.pid == self.pid:
+        if window.app.pid != self.pid:
             return
 
         self.hide_actions()
