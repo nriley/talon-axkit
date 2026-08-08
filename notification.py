@@ -197,11 +197,11 @@ def gui_actions(gui: imgui.GUI):
 
 class NotificationMonitor:
     __slots__ = (
-        "pid",
-        "actions_for_notification",
-        "_notifications",
         "_actions",
         "_apps",
+        "_notifications",
+        "actions_for_notification",
+        "pid",
     )
 
     def __init__(self, app: ui.App):
