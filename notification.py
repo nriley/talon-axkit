@@ -1,7 +1,6 @@
 from contextlib import suppress
 from dataclasses import dataclass, field
 from itertools import chain
-from typing import Optional
 from uuid import UUID
 
 from talon import (
@@ -279,7 +278,7 @@ class NotificationMonitor:
         return notifications[index]
 
     def perform_action(
-        self, action: str, index: Optional[int] = None, app_name: str = None
+        self, action: str, index: int | None = None, app_name: str = None
     ):
         notification = None
         if index is not None:
